@@ -118,3 +118,24 @@ console.log(process.argv); //Lo que hace es transformarnos a un array, cada cosa
   ]
 
 console.log(process.memoryUsage()); //Nos devuelve un objeto con distintas propiedades sobre el uso de memoria
+
+
+"NON BLOCKING I/O"
+
+//Basicamente lo que hace es que ejecuta procesos al mismo tiempo sin esperar a que otros se acaben de ejecutar
+
+"CICLO DE VIDA EN UN PROCESO EN NODE"
+
+"-------Pila de procesos-------"
+
+//Aqui lo que hace es que se genera un main() y dentro de ese main, entra linea por linea y cuando entra una y la ejecuta, la elimina y procede con la siguiente y asi hasta acabar, cuando no hay nada mas por ejecutar, se elimina el main()
+//Pila de procesos => Node Apis => Cola de callbacks
+
+//Nota: siempre que tengamos que poner un -g (global) en la terminal, es porque esta debe estar ejecutada como administrador
+
+
+
+"NODEMON"
+
+//se ejecuta igual que node y lo que hace es reiniciarse (o reiniciar el servidor) cuando detecta cambios, por eso solo es recomendable para el desarrollo y no para la produccion
+//ctrl + c para cancelar y salir de nodemon
