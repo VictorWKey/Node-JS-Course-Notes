@@ -90,6 +90,29 @@ const {saludarMundo, saludar} = require("./saludos.js"); //De esta manera desest
 console.log(saludarMundo());
 console.log(saludar(`Victor`));
 
+const {saludarMundo, saludar = "hola"} = require("./saludos.js") //Puedes crearles una propiedad y darle un valor desde aqui. Si ya tienen ese valor y aun asi se lo das aqui, seguira tomando el que ya tiene originalmente
+//---------------------------------
+const deadpool ={
+    nombre: "Dade",
+    apellido: "Jhonson"
+}
+
+function imprimirHeroe({nombre, apellido}){
+    nombre = "Juanito"; //Asi si se redaclarara, pero si le ponemos "const" no
+    console.log(nombre, apellido)
+}
+
+imprimirHeroe(deadpool);
+//-------------
+
+const heroes = ["Deadpool", "Superman", "Batman"];
+
+const [h1, h2, h3] = heroes;
+
+console.log(h1, h2, h3); //Cada posicion de la desestructuracion tendra el valor de su respectiva posicion del array original
+
+
+
 
 
 "MODULOS BUILT-IN"
@@ -134,8 +157,75 @@ console.log(process.memoryUsage()); //Nos devuelve un objeto con distintas propi
 //Nota: siempre que tengamos que poner un -g (global) en la terminal, es porque esta debe estar ejecutada como administrador
 
 
-
 "NODEMON"
 
 //se ejecuta igual que node y lo que hace es reiniciarse (o reiniciar el servidor) cuando detecta cambios, por eso solo es recomendable para el desarrollo y no para la produccion
 //ctrl + c para cancelar y salir de nodemon
+
+
+
+
+"OPTIONAL CHAINING OPERATOR"
+
+const salario = [
+    {salario: 1000}, {salario: 2000}, {salario: 3000}];
+
+const salarioEspecifico = salario.find(e => e.salario === 4000)?.salario; //Esto sin el operador devolveria undefined.salario, lo cual nos lanzara un error, pero si le ponemos el operador, hara que todo en general valga undefined
+
+console.log(salarioEspecifico);
+
+
+"PROMESAS REPASO"
+
+//Peor forma:
+getEmpleado(id)
+   .then(empleado => {
+       getSalario(id)
+           .then(salario =>{
+               console.log(`El empleado`, empleado, `tiene un salario de: `, salario); 
+           })
+           .catch(err => console.log(err))
+        
+   })
+   .catch(err=>console.log(err))
+
+//Mejor forma:
+let nombre;
+
+getEmpleado(id)
+    .then(empleado => {
+        nombre = empleado;
+        return getSalario(id)
+    })
+    .then(salario => console.log(`El empleado`, nombre, `tiene un salario de: `, salario))
+    .catch(err => console.log(err))
+
+
+
+"ASYNC & AWAIT REPASO"
+
+const getInfoUsuario = async( id ) => {
+
+    try {
+        const empleado = await getEmpleado(id);
+        const salario = await getSalario(id);
+    
+        return `El salario del empleado: ${ empleado } es de ${ salario }`;
+        
+    } catch (error) {
+        throw error;
+    }
+}
+//Cuando una funcion es asincrona se utilizan los mismos metodos que una promesa. Solo que en este caso, el "return" funciona como el resolve y el "throw" como el reject(en el try y catch) (No veo necesario el try y catch porque aun asi tirara el reject de algun await y este sera atrapado despues por el catch pero aun asi usa lo que te recomienden)
+
+const id = 3;
+
+getInfoUsuario( id )
+    .then( msg => {
+        console.log('TODO BIEN!')
+        console.log(msg) 
+    })
+    .catch( err => {
+        console.log('TODO SALIO MAL!')
+        console.log( err ) 
+    });
