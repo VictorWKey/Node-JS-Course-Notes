@@ -229,3 +229,56 @@ getInfoUsuario( id )
         console.log('TODO SALIO MAL!')
         console.log( err ) 
     });
+
+
+
+
+"FILESYSTEM"
+
+const fs = require(`fs`);
+
+console.clear()
+
+const base = 8;
+let salida = ``;
+
+for(let i = 0; i<=10; i++){
+    salida += `${base} x ${i} = ${base*i}\n`;
+}
+
+//Lo siguiente creara un archivo con ese nombre y tipo dentro de esa carpeta y dentro se mandara el valor de salida
+fs.writeFile(`multiplication_table.txt`, salida, err=>{
+    if(err) throw err;
+
+    console.log(`Tabla creada`)
+    
+})
+
+//Tambien esta lo siguiente 
+
+fs.writeFileSync(`multiplication_table.txt`, salida); //Esto es lo mismo pero asincrono y no acepta como parametro el callback del error
+
+console.log(`Tabla creada`)
+
+"PACKAGE.JSON"
+
+//Lo siguiente se debe hacer en todos los proyectos que creamos
+//Linea de comandos:
+
+//npm init
+//Llenamos lo que nos pida y lo que no queramos poner no lo ponemos
+//Esto nos creara un archivo package.json, en el cual tendremos varios datos de la aplicacion relacionados con node.
+//En la propiedad scripts podemos poner dentro de ella propiedades, la cual tendra como valor algun comando que queramos poner en la linea de comandos pero utilizando el nombre de su propiedad
+//Por ejemplo:
+//npm run nombreDeLaPropiedad (La propiedad podria llamarse "test" y esta ejecutara el comando "node app")
+
+//Cuando vamos a instalar un package, se pone como lo indica la pagina y cuando se instale, este se instalara en la propiedad "dependencies" del package.json y para que alguien ejecute tu aplicacion, debera tener esas dependencias
+
+//Para instalar un package que solo se va a utilizar en produccion, se hace de la siguiente manera:
+//Ejemplo: npm install nodemon --save-dev
+//Lo anterior lo podras ver en el package.json, se generara una propiedad llamada "devDependencies" y ahi estara este paquete
+
+//Supongamos que quiero instalar un version especifica de un package, se haria de la siguiente manera 
+//npm install colors@1.0.4
+
+//npm update actualizara todos los packages que tenemos a la version mas reciente
