@@ -282,3 +282,94 @@ console.log(`Tabla creada`)
 //npm install colors@1.0.4
 
 //npm update actualizara todos los packages que tenemos a la version mas reciente
+
+"YARGS"
+
+//Nota: para usar un paquete, lo debemos tener en dependencies
+
+//Yargs tiene una propiedad llamada argv, la cual tiene como funcion la misma que process.argv pero en forma de objeto y para añadir una propiedad con un valor que querramos, se pone: --propiedad=valor y de esta manera con yargs podemos acceder a ese valor, no con la posicion, sino con el nombre
+
+//Se puede hacer lo mismo pero con un espacio: --propiedad valor
+
+//Yargs nos añade a la aplicacion, un comando --help 
+
+const argv = require(`yargs`).argv;
+
+"-------Option---------"
+
+//forma corta: -b
+//forma larga: --base
+//De ahora en adelante llamare option a los argumentos de la linea de comando
+
+//Si a una option no se le da un valor, por defecto le pone true
+
+const {createFile} = require(`./multiplicacion`)
+const argv = require(`yargs`)
+                //option añade una opcion de comando y esta se puede ver en --help. Debido a que pusimos que este comando podria ser "b" y "base", al pasarlo como argumento en la linea de comandos (--base=5), este sera añadido al yargs.argv con el nombre "base" y el nombre "b"
+                .option(`b`,{   
+                    alias: `base`,
+                    type: `number`,
+                    demandOption: true, //Esto nos dice que el comando a fuerza debe llevar un valor, sino dara error
+                    escribe: `Is the base of the multiplication table` //Agrega una descripcion en el --help
+                })
+                .option(`l`,{
+                    alias: `list`,
+                    type: `boolean`,
+                    default: false,
+                    demandOption: true,
+                    escribe: `Show the multiplication table on console`
+                })
+                .check((argv, options)=>{  //Check es para ponerle condiciones a las opciones
+                    console.log(argv);     //Nos regresa el objeto de yargs.argv
+                    if(isNaN(argv.b)){
+                        throw `The base must be a number`
+                    } 
+                    return true; //Debemos retornar true si no hay ningun error, sino aunque no haya tirara uno, es una regla del check
+                })
+                .argv;
+
+                
+console.log(argv);
+
+createFile(argv.b, `multiplication_table.txt`, argv.list)
+  .then(nameFile=>console.log(nameFile, `created`))
+  .catch(err=>console.log(err));
+
+
+"-------Yargs independiente---------"
+
+  //Debe crearse una carpeta llamada config o yargs en nuestra aplicacion y dentro crear un archivo yargs.js y dentro de este ira toda la configuracion de los yargs
+
+
+
+"COLORS PACKAGE DATA"
+
+const createFile = async (base, fileName, list, until)=>{
+    try{
+        const fs = require(`fs`);
+        let salida, consola = ``; //Hay que tener cuidado con mandar informacion al achivo creado que contenga cosas que no querramos pero que si queremos que esten en consola y para eso se hace esto
+
+        for(let i = 1; i<=until; i++){
+            salida += `${base} ${`x`} ${i} = ${base*i}\n`; 
+            consola += `${base} ${`x`.green} ${i} = ${base*i}\n`; 
+        }
+        
+
+        if(list) console.log(consola); 
+            
+        fs.writeFileSync(fileName, salida);
+    
+        return fileName;
+    } catch(err){
+        throw err;
+    }
+}
+
+"GITIGNORE DATA"
+
+//Para hacer que nuestro gitignore ignore archivo dentro de una carpeta, se hace como ejemplo lo siguiente: /salida/*.txt 
+//Cuando un directorio tiene un directorio, del cual vamos ignorar todo lo que tenga dentro, debemos crear por lo menos algo dentro, por ejemplo un info.md
+//Tambien los node_modules deben ser ignorados ya que no es necesario seguir los cambios que se hagan ahi. De hecho si borramos esa carpeta, nuestra aplicacion ya no funcionara porque requiere de los packages instalados. Pero si la borramos, esta carpeta puede recuperarse facilmente, simplemente poniendo en la linea de comandos: npm install
+//git checkout -- . nos regresa a lo que teniamos en el ultimo commit
+
+//Para ver como se vera nuestro README en github, buscamos markdown open preview en el command palette de VSC
