@@ -235,6 +235,8 @@ getInfoUsuario( id )
 
 "FILESYSTEM"
 
+//Todos sus metodos son asincronos. Por lo tanto si ejecutamos varios de estos, no sabremos cual terminara de ejecutarse primero. Para saber y ponerles un orden podemos agregarle un Sync al final del metodo y por lo tanto se volveran sincronos. Cuando son asincronos, se ejecutan despues del codigo sincrono. Cuando son sincronas no necesitamos del callback en el metodo
+
 const fs = require(`fs`);
 
 console.clear()
@@ -260,12 +262,52 @@ fs.writeFileSync(`multiplication_table.txt`, salida); //Esto es lo mismo pero as
 
 console.log(`Tabla creada`)
 
+//Metodos
+
+//Leer archivo. Si esta fuera sincrona, esta va devolver el contenido, por lo tanto la podriamos obtener asignandole una variable
+fs.readFile(`index.html`, `utf-8`, (err, content)=>{
+    if(err){
+        throw err;
+    } 
+    console.log(content);   
+})
+
+fs.rename(`index.html`, `main.html`, (err)=>{
+    if(err){
+        throw err;
+    }
+})
+
+//Agregar algo al final de un archivo (crea el archivo si no existe)
+fs.appendFile(`index.html`, `<p>XD</p>`, (err)=>{
+    if(err){
+        throw err;
+    }
+})
+
+//Reescribe un archivo por completo(crea uno si no existe)
+
+fs.writeFile(`index.html`, `Contenido nuevo`, (err)=>{
+    if(err){
+        throw err;
+    }
+})
+
+//Elimina un archivo
+
+fs.unlink(`index.html`, (err)=>{
+    if(err){
+        throw err;
+    }
+})
+
+
 "PACKAGE.JSON"
 
 //Lo siguiente se debe hacer en todos los proyectos que creamos
 //Linea de comandos:
 
-//npm init
+//npm init o npm init -y (este nos crea un package.json con valores por defecto)
 //Llenamos lo que nos pida y lo que no queramos poner no lo ponemos
 //Esto nos creara un archivo package.json, en el cual tendremos varios datos de la aplicacion relacionados con node.
 //En la propiedad scripts podemos poner dentro de ella propiedades, la cual tendra como valor algun comando que queramos poner en la linea de comandos pero utilizando el nombre de su propiedad
@@ -373,3 +415,161 @@ const createFile = async (base, fileName, list, until)=>{
 //git checkout -- . nos regresa a lo que teniamos en el ultimo commit
 
 //Para ver como se vera nuestro README en github, buscamos markdown open preview en el command palette de VSC
+
+"SOLO ES PARA ANALIZAR CODIGO "
+
+//--------app.js---------
+require(`colors`);
+
+const { showMenu, pause } = require("./helpers/messages");
+
+console.clear();
+
+const main = async()=>{
+    let opt = ``;
+    do{
+        opt = await showMenu();
+        console.log(opt);
+        if (opt !== `0`) await pause();
+    } while(opt !== `0`)
+}
+
+main();
+
+//--------messages.js----------
+
+const { resolve } = require("path");
+
+require(`colors`);
+
+
+const showMenu = ()=>{
+    return new Promise(resolve=>{
+        console.clear();
+        console.log("================".green);
+        console.log("Option Selection".green);
+        console.log("================\n".green);
+    
+        console.log(`${`1`.green} Create chore`);
+        console.log(`${`2`.green} List chores`);
+        console.log(`${`3`.green} List complete chores`);
+        console.log(`${`4`.green} List pending chores`);
+        console.log(`${`5`.green} Complete chore(s)`);
+        console.log(`${`6`.green} Delete chore`);
+        console.log(`${`0`.green} Exit\n`);
+    
+        const readline = require(`readline`).createInterface({
+            input: process.stdin, //Lo que hace esto es pausar la ejecucion de la aplicacion y esperar caracteres y un enter
+            output: process.stdout //Lo que hace esto es mostrarle un mensaje al usuario cuando le estemos pidiendo algo con la question
+        });
+    
+        readline.question(`Select an option: `, opt=>{ //El primer parametro recibe el mensaje que llevarl stdout y el segundo recibe lo que se ponga en el stdin
+            // console.log(opt); //Esto nos devolvera lo que pongamos en el stdin al darle enter
+            readline.close(); //Esto hara que salgamos del modo de readline
+            resolve(opt);
+        })  
+    })  
+}
+
+//No se pueden poner 2 readline al mismo tiempo, siempre se pondra la ultima. Si queremos hacer dos, tenemos que esperar a que la primera de una respuesta, la cierre y ahora si crear otra readline que tambien de una respuesta
+
+const pause = ()=>{
+    return new Promise(resolve=>{
+        const readline2 = require(`readline`).createInterface({
+            input: process.stdin, 
+            output: process.stdout 
+        });
+    
+        readline2.question(`\nPress ENTER to continue\n `, opt=>{  
+            readline2.close(); 
+            resolve();
+        })   
+    }) 
+}
+
+module.exports = {
+    showMenu,
+    pause
+}
+
+"IMPORT Y EXPORT"
+//Primero pon en el package.json lo siguiente debajo de "main":
+//"type": "module", 
+
+
+//en vez de usar:
+const inquirer = require(`inquirer`);
+//usa:
+import inquirer from `inquirer`;
+
+//en vez de usar:
+module.exports = {
+    funcion,
+}
+//usa:
+export {funcion};
+
+
+"MODULO OS(Operating System)"
+
+//Es un modulo que necesita del require
+
+const os = require(`os`);
+
+console.log(os.type()); //Tipo de sistema operativo 
+console.log(os.homedir()); //Ruta de instalacion
+console.log(os.uptime()); //Numero de segundos que tiene abierto el sistema operativo
+console.log(os.userInfo()); //Informacion del usuario
+
+
+
+"MODULO TIMERS"
+
+setImmediate(funcion, argumento1, argumento2); //Ejecuta la funcion inmediatamente despues del codigo sincrono y se ejecuta de forma asincrona
+
+
+
+"NPM"
+
+//Solo podemos importar (con require) archivos .js o una carpeta con un archivo package.json que contiene una propiedad "main"
+//Solo los modulos con un archivo package.json son paquetes, tambien nuestra aplicacion la consideramos como paquete
+//Dependencia: paquete que otro paquete necesita para funcionar
+
+//npm init --yes //Para crear un npm de forma rapida
+//npm install para instalar todas las dependencias que estan en el package.json
+//npm install express --save-dev //Esto es para instalar ese paquete en las devDependencies
+
+
+
+"JSON"
+
+//Es solo un archivo de texto, como si fuera un bloc de notas
+
+
+"PACKAGE-LOCK.JSON"
+
+//Se genera automaticamente cuando npm modifica el arbol de node_modules o package.json
+//Describe el arbol generado para que futuras instalaciones puedan generar exactamente el mismo arbol
+//Gracias a este, otros desarrolladores pueden instalar exactamente las mismas dependencias que tu
+//La propiedad packages es un objeto que asocia la ubicacion de cada paquete con un objeto que contiene informacion sobre ese paquete
+
+"MODULO EVENTS"
+
+"------Emitters-------"
+
+//Sob objetos que emiten eventos nombrados y llaman a funciones especificas cuando ocurren
+//Son instancias de la clase EventEmitter
+//Una instancia es un objeto que se deriva de algun otro objeto. Tambien un objeto puede derivarse de una clase
+
+//Tienen un metodo .on() para asociar una funcion al evento. La funcion se ejecuta cuando ocurre un evento. Y a esto se le conoce como "Event Handler"
+
+const EventEmitter = require(`events`); //En este caso no le ponemos el mismo nombre a la constante que el nombre del modulo, ya que lo que nos va devolver es una clase (funcion constructora) llamada EventEmitter
+
+const emisorProductos = new EventEmitter(); //Con esto podremos crear eventos y mandarlos a llamar cuando hagamos determinada accion
+
+emisorProductos.on(`compra`, (total, numProductos) => {
+    console.log(`Se realizo una compra por ${total}, con un total de ${numProductos}`)
+}); //Aqui lo que hacemos es crear un evento con su respectivo nombre. Es como cuando creamos una funcion sin mandarla a llamar. Esto es un "Event Handler"
+
+emisorProductos.emit(`compra`, 500, 5); //Aca mandamos a llamar la ejecucion del evento con su respectivo nombre y pasarle sus respectivos parametros al callback de la creacion de este evento. Es como cuando mandamos a ejecutar una funcion
+
