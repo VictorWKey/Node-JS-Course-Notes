@@ -573,3 +573,96 @@ emisorProductos.on(`compra`, (total, numProductos) => {
 
 emisorProductos.emit(`compra`, 500, 5); //Aca mandamos a llamar la ejecucion del evento con su respectivo nombre y pasarle sus respectivos parametros al callback de la creacion de este evento. Es como cuando mandamos a ejecutar una funcion
 
+
+
+"PROTOCOLO"
+
+//Conjunto de reglas que permiten transmitir informacion entre dispositivos de una red
+
+
+
+
+"SOLICITUDES HTTP"
+
+//Request = solicitud
+//Metodos HTTP = es la accion que se requiere hacer con la solicitud 
+//Path = le dice al servidor donde esta el recurso que se requiere modificar o con el que se va realizar la accion 
+//Headers = proveen mayor informacion para el servidor
+//Body = Si se necesita enviar alguna informacion al servidor
+
+
+
+"RESPUESTAS HTTP"
+
+//Response = respuesta
+//Codigo de estado = exitoso, con errores, etc.
+//Texto de estado = describe el codigo con mas detalle 
+//Version HTTP
+//Headers = informacion adicional de la respuesta
+//Body = este se ocupa cuando el servidor retorna un recurso que necesite el cliente
+
+
+
+"CODIGOS DE ESTADO"
+
+//100 - 199 respuesta informativa
+//200 - 299 respuesta satisfactoria
+//300 - 399 redirecciones
+//400 - 499 errores de los clientes
+//500 - 599 errores de los servidores
+
+//https://developer.mozilla.org/es/docs/Web/HTTP/Status
+
+
+
+"MODULO HTTP Y CREAR SERVIDOR"
+
+//Nos sirve para crear un servidor
+
+const http = require(`http`);
+
+const server = http.createServer((req, res)=>{
+    console.log(`Solicitud nueva`);
+    res.end(`Soy la respuesta`); //Esto se mostrara en nuestro localhost (servidor) como si hubieramos hecho un document.write pero en realidad ahi se pondra la respuesta del servidor
+}) //El callback se ejecutara cada vez que realizemos una solicitud al servidor
+
+const PUERTO = 3000;
+
+server.listen(PUERTO, ()=>{
+    console.log(`El servidor esta escuchando en http://localhost:${PUERTO}...`)
+}); //En este momento el servidor comenzara a escuchar pero tiene que saber donde escuchar y para eso en el primer parametro se pone el puerto. Tambien opcionalmente podemos decirle que hacer cuando comienze a escuchar y esto se hace con el callback que va en el segundo parametro
+
+//Con todo lo anterior ya tendriamos nuestro server creado en tan solo 9 lineas
+//Para echarlo a andar hay que hacer lo mismo de siempre, ejecutar el codigo en consola: node app.js
+
+
+
+
+
+"PORT/PUERTO"
+
+//Ubicacion virtual del sistema operativo en la cual se puede acceder a una aplicacion o a un proceso especifico que se este ejecutando en ese puerto
+//Estan representados por numeros enteros positivos, por ejemplo: 3000
+
+
+
+"REQ Y RES"
+
+const http = require(`http`);
+
+const server = http.createServer((req, res)=>{
+    console.log(req.url); //Nos da el camino de la solicitud que va despues del dominio
+    console.log(req.method); //Nos devuelve el metodo utilizado en esa request
+    res.end(`Soy la respuesta`); 
+}); 
+
+const PUERTO = 3000;
+
+server.listen(PUERTO, ()=>{
+    console.log(`El servidor esta escuchando en http://localhost:${PUERTO}...`)
+}); 
+
+"EXTENSION REST CLIENT DE VSC"
+
+ //Para utilizarla tenemos que crear un archivo index.http y en el poner por ejemplo: POST http://localhost:3000/ y enviar el request hasta arriba en el VSC. Cuando revisemos lo que regreso req.method, nos fijaremos que devuelve POST
+
