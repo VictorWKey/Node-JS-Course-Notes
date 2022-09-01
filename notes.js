@@ -651,8 +651,14 @@ server.listen(PUERTO, ()=>{
 const http = require(`http`);
 
 const server = http.createServer((req, res)=>{
-    console.log(req.url); //Nos da el camino de la solicitud que va despues del dominio
-    console.log(req.method); //Nos devuelve el metodo utilizado en esa request
+    // console.log(req.url); //Nos da el camino de la solicitud que va despues del dominio
+    // console.log(req.method); //Nos devuelve el metodo utilizado en esa request
+    // console.log(req.headers); 
+
+    // console.log(res.statusCode); //Codigo de estado de la respuesta
+    
+    // res.setHeader(`content-type`, `aplication/json`); //Con esto le agregamos algo a los headers de la respuesta
+    // console.log(res.getHeaders()); //Con esto optenemos lo que tenemos en los headers
     res.end(`Soy la respuesta`); 
 }); 
 
@@ -665,4 +671,52 @@ server.listen(PUERTO, ()=>{
 "EXTENSION REST CLIENT DE VSC"
 
  //Para utilizarla tenemos que crear un archivo index.http y en el poner por ejemplo: POST http://localhost:3000/ y enviar el request hasta arriba en el VSC. Cuando revisemos lo que regreso req.method, nos fijaremos que devuelve POST
+
+
+"ESTRUCTURA DE UNA URL"
+
+//https(Protocolo: conjunto de reglas para acceder a un recurso en especifico)
+//www. (Subdominio: permite a los sitios webs organizar y separar la informacion para distintos propositos)
+//freecodemap (Dominio: referencia unica)
+//.org (Dominio de nivel superior (TLD))
+//espanol/ (Path: archivo o directorio en el servidor web. Puede tener parametros para personalizarlo. Estos parametros son parte de la URL)
+
+//https://www.ejemplo.org/usuarios/1423 . Estos es un ejemplo de un "Parametro de ruta". Nos permite personalizar esa url para acceder especificamente a los datos que queremos
+//https://www.google.com/search?q=cursos+de+node . Esto es un ejemplo de "Parametro query". La caracteristico es el signo de interrogacion. Son parametros usados para obtener contenido dinamico. Por ejemplo, filtrar una lista de recursos. Si te fijas tenemos una clave y un valor: q=cursos+de+node. Igual que en un objeto
+//Tambien se pueden poner varios "parametros query" y se separan con un "&", por ejemplo: q=cursos+de+node&sourceid=chrome&ie=UTF-8. //Usamos parametros query para filtrar solicitudes GET
+
+"MODULO URL"
+
+//No necesita require
+
+const myURL = new URL(`https://www.ejemplo.org/cursos/programacion?ordenar=vistas&nivel=1`);
+
+console.log(myURL.hostname); //www.ejemplo.org
+console.log(myURL.pathname); // /cursos/programacion
+
+console.log(myURL.searchParams); //{ "ordenar":"vistas", "version":"1"}
+console.log(myURL.searchParams.get(`ordenar`)); //vistas
+console.log(myURL.searchParams.get(`nivel`)); //1
+
+console.log(myURL.protocol); //https
+
+
+
+"ROUTING"
+
+//Significa manejar las solicitudes del cliente en base a ciertos criterios: metodo y camino
+//Route = ruta
+//Routing significa crear distintas rutas para ese servidor para que ese servidor sepa que hacer con una solicitud especifica. Es como crear un mapa y decirle al servidor: !ey¡ quiero que manejes este tipo de solicitud para este camino en particular, de esta forma.
+
+"-------Criterios-------"
+
+//El metodo de la solicitud HTTP (GET, POST, PUT, DELETE) y con esto conocemos el tipo de operacion.
+
+//El path de la solicitud HTTP. De esta forma el servidor sabe el recurso especifo que usara para crearlo, editarlo, eliminarlo o modificarlo.
+
+//Ruta = metodo + path + como manejarlo (¿que? ¿donde? ¿como?)
+
+//Un ejemplo de lo que le solicitamos al servidor es: Si recibes una solicitud POST en /cursos haz esto...
+
+"------Manejar rutas en sevidor node------"
 
