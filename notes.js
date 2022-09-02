@@ -720,3 +720,71 @@ console.log(myURL.protocol); //https
 
 "------Manejar rutas en sevidor node------"
 
+const http = require(`http`);
+const {infoCursos} = require(`./cursos.js`);
+
+const manejarSolicitudGET = (req, res)=>{
+    const path = req.url; //Recuerda que .url nos regresa el path de la url
+    if(path === `/`){
+        //  res.statusCode = 200; //No es necesario porque por defecto el statusCode es 200
+         res.writeHead(200, {"Content-Type": "aplication/json"} ); //Con esto agregamos informacion a la cabecera de la respuesta. El primer parametro es el codigo de respuesta y el segundo lo que se va agregar a la cabecera
+         return res.end(`Bienvenidos a mi primer servidor y API con node`); //Siempre usa el return para cuando envies la respuesta (Solo hay una respuesta una solicitud)
+    } else if (path === `/cursos`){
+
+        return res.end(JSON.stringify(infoCursos)); //Para ver esto de una mejor manera en el servidor, podemos usar la extension JSON view de google chrome
+    } else if (path === `/cursos/programacion`){
+
+        return res.end(JSON.stringify(infoCursos.programacion));
+    } 
+
+    //Si no se encuentra un ruta valida, haz lo siguiente:
+    //Si te preguntas porque aqui no usamos el else es porque si recuerdas, el res.end(respuesta), termina la respuesta y la envia, has de cuenta similar a un return 
+    res.statusCode = 404; 
+    res.end(`El recurso solicitado no existe...`);    
+};
+
+const manejarSolicitudPOST = (req, res)=>{
+    const path = req.url;
+
+    if(path === `/cursos/programacion`){
+        //-----Procesar cuerpo de un POST-----
+        let cuerpo = ``;
+
+        req.on(`data`, content=>{
+            cuerpo = content.toString(); //Si guardamos el cuerpo con un .toString() nos dara un error de buffer
+        }) //Este evento recibe la informacion del POST y la almacena en "content"
+
+        req.on(`end`, ()=>{
+            cuerpo = JSON.parse(cuerpo);
+            console.log(cuerpo); //Aqui se guarda lo que enviamos desde el POST y eso significa que lo procesamos correctamente:)
+            return res.end(`The server have recibed POST request for /cursos/programacion`);
+        }) //Este evento detecta cuando se termina de procesar la informacion
+        //------------------------------------
+    }
+
+    res.statusCode = 404;
+    return res.end(`El recurso solicitado no existe...`);
+};
+
+const server = http.createServer((req, res)=>{
+    const {method} = req;  
+
+    switch(method){
+        case `GET`:
+            return manejarSolicitudGET(req, res);
+        case `POST`:
+            return manejarSolicitudPOST(req, res);
+        default: 
+            res.statusCode = 501;
+            console.log(`El metodo usado no puede ser manejado por el servidor: ${method}`);
+            break;
+    }
+
+});
+
+const PUERTO = 4000;
+
+server.listen(PUERTO, ()=>{
+    console.log(`El servidor esta escuchando en el puerto ${PUERTO}`);
+})
+
