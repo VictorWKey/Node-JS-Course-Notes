@@ -788,3 +788,81 @@ server.listen(PUERTO, ()=>{
     console.log(`El servidor esta escuchando en el puerto ${PUERTO}`);
 })
 
+
+
+"API"
+
+//Nos permite que un software ofrezca servicio a otro software. Permite que dos aplicaciones se comuniquen. En este caso quien se comunicara sera el cliente y el servidor
+
+
+
+"REST (Representational State Transfer)"
+
+//Es un estilo de arquitectura de software para sistemas hipermedia distribuidos como la World Wide Web
+
+//RESTful API: es una API basada en REST
+
+
+
+
+"EXPRESS JS"
+
+const express = require(`express`);
+
+const app = express();
+
+"-------Routing--------"
+
+//Con el siguiente metodo se manejan los request y response de GET
+app.get(`/`, (req, res) => {
+    res.send(`This is my first server with express`);
+
+});
+
+app.get(`/api/courses`, (req, res) => {
+    res.send(JSON.stringify(infoCourses));
+});
+
+app.get(`/api/courses/programation`, (req, res) => {
+    res.send(JSON.stringify(infoCourses.programacion));
+});
+
+app.get(`/api/courses/matematicas`, (req, res) => {
+    res.send(JSON.stringify(infoCourses.matematicas))
+})
+
+const PORT = process.env.PORT || 3000; //el process.env.PORT lo que hara es obtener el puerto que se le asigna cuando hosteamos una pagina ya bien
+
+app.listen(PORT, () => {
+    console.log(`The server is listening in the port: ${PORT} `)
+});
+
+
+"--------Parametros-de-ruta---------"
+
+//Parametros de ruta
+//Los parametros de ruta se indican con ":" antes del parametro, despues obtenemos el valor de ese parametro dependiendo de lo que ponga el usuario en ese parametro. El valor dependera de lo que ponga el usuario despues de /programation y este valor se agregara dentro de una variable con req.params.parametroderuta
+//Si lo que haya en ese parametro no existe en nuestra base de datos, podemos enviar una respuesta con un mensaje de error y aparte indicarle el codigo de status con .status(num) y despues de eso enviarla con el .send()
+app.get(`/api/courses/programation/:language`, (req, res) => {
+    const language = req.params.language;
+    const result = infoCourses.programacion.filter(course => course.lenguaje === language);
+
+    if(result.length === 0){
+        return res.status(404).send(`${language} not found`);
+    }
+
+    res.send(JSON.stringify(result));
+});
+
+app.get(`/api/courses/programation/:language/:level`, (req, res) => {
+    const language = req.params.language;
+    const level = req.params.level;
+    const result = infoCourses.programacion.filter(course => course.lenguaje === language && course.nivel === level);
+
+    if(result.length === 0){
+        return res.status(404).send(`${language} and ${level} course not found`)
+    }
+
+    res.send(JSON.stringify(result));
+
+});
