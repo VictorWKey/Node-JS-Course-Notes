@@ -848,8 +848,11 @@ app.get(`/api/courses/programation/:language`, (req, res) => {
     const result = infoCourses.programacion.filter(course => course.lenguaje === language);
 
     if(result.length === 0){
-        return res.status(404).send(`${language} not found`);
+        return res.status(404).send(`${language} not found`); //Aqui hubiera sido mejor utilizar un codigo 204
     }
+
+
+
 
     res.send(JSON.stringify(result));
 });
@@ -860,9 +863,165 @@ app.get(`/api/courses/programation/:language/:level`, (req, res) => {
     const result = infoCourses.programacion.filter(course => course.lenguaje === language && course.nivel === level);
 
     if(result.length === 0){
-        return res.status(404).send(`${language} and ${level} course not found`)
+        return res.status(404).send(`${language} and ${level} course not found`); //Aqui hubiera sido mejor utilizar un codigo 204
     }
 
     res.send(JSON.stringify(result));
 
 });
+
+
+"---------Parametros-query----------"
+
+app.get(`/api/courses/programation/:language`, (req, res) => {
+    const language = req.params.language;
+    const result = infoCourses.programacion.filter(course => course.lenguaje === language);
+
+    if(result.length === 0){
+        return res.status(404).send(`${language} not found`); //Aqui hubiera sido mejor utilizar un codigo 204
+    }
+
+    //-----------------------------------------------
+    //Con esto logramos manejar los parametros query
+    if(req.query.organize === `vistas`){
+        return res.send(result.sort((a, b) => b.vistas - a.vistas))
+    }
+    //Podriamos meterlo a una funcion porque seguramente en proyecto real se utilize este parametro muchas veces
+    //------------------------------------------------
+
+    res.send(JSON.stringify(result));
+});
+
+"------------Routers--------------"
+
+//De la siguiente manera creamos routers y estos son utilizados para cuando se repiten muchas veces alguanas rutas y se crean de la siguiente manera:
+const programacionRouter = express.Router();
+app.use(`/api/courses/programation`, programacionRouter);
+
+const matematicasRouter = express.Router();
+app.use(`/api/courses/matematicas`, matematicasRouter);
+
+//Ahora en vez de usar app. , usaremos el nombre de la constante que almaceno alguna ruta y despues ya no pondremos la ruta completa, sino solo lo que hace falta completar
+
+programacionRouter.get(`/`, (req, res) => {
+    res.send(JSON.stringify(infoCourses.programacion));
+});
+
+programacionRouter.get(`/:language`, (req, res) => {
+    const language = req.params.language;
+    const result = infoCourses.programacion.filter(course => course.lenguaje === language);
+
+    if(result.length === 0){
+        return res.status(404).send(`${language} not found`); //Aqui hubiera sido mejor utilizar un codigo 204
+    }
+
+    if(req.query.organize === `vistas`){
+        return res.send(result.sort((a, b) => b.vistas - a.vistas))
+    }
+
+    res.send(JSON.stringify(result));
+});
+
+//Para ver como ordenamos los routers por archivos, visita el proyecto que hizimos con el curso de freeCodeCamp
+
+
+"---------POST-------------"
+
+//Middleware: las funciones middleware se ejecutan despues de recibir una solicitud y antes de enviar una respuesta.
+//Tienen acceso al objeto de la solicitud, al objeto de la respuesta y a next(), una cuncion que se llama para ejecutar el proximo middleware
+//Puedes averiguar tambien sobre el .next()
+//Esto nos va permitir procesar el cuerpo de esa solicitud en formato json y poder trabajar con ese cuerpo de la solicitud en nuestro codigo, por ejemplo para la propiedad req.body, si no se usa el middleware, el valor de req.body sera "null"
+programacionRouter.use(express.json()); 
+
+programacionRouter.post(`/`, (req, res) => {
+    const newCourse = req.body;
+    programacion.push(newCourse);
+    res.send(programacion);
+});
+
+
+"------------PUT--------------"
+
+//Identidad en base de datos: es algo que vas almacenar en tu base de datos que tiene sus propiedades y valores especificos
+//Para actualizar una propiedad de una identidad, tenemos que enviar todas las propiedades y solo enviar diferentes las que queremos actualizar
+
+programacionRouter.put(`/:id`, (req, res) => {
+    const updateCourse = req.body;
+    const id = req.params.id;
+
+    const index = programacion.findIndex(course => course.id == id);
+
+    if (index >= 0){
+        programacion[index] = updateCourse;
+    }
+
+    res.send(JSON.stringify(programacion));
+});
+
+//Recuerda que get muestra la informacion en el servidor, los demas metodos no, sus respuestas las podemos ver en el mismo index.http
+
+
+"---------Patch------------"
+
+//Este metodo http es muy parecido a put pero si nos permite pasar pares clave-valor especificos, los pares clave-valor especificos de una identidad, los cuales queremos actualizar. No es necesario enviar las propiedades que no se van a modificar como lo es en el caso de put.
+
+programacionRouter.patch(`/:id`, (req, res) => {
+    const updateInfo = req.body;
+    const id = req.params.id;
+
+    const index = programacion.findIndex(course => course.id == id);
+
+    if(index >= 0){
+        const cursoAModificar = programacion[index];
+        Object.assign(cursoAModificar, updateInfo); //Con este metodo de "Object" remplazamos propiedades especificas de un objeto
+    }
+
+    res.send(JSON.stringify(programacion));
+});
+
+//Nota: Cuando utilizes el formato JSON evita poner una "," despues de la ultima propiedad y tambien evitala poner si en un objeto hay solo una propiedad. Con esto te evitaras muchos errores
+
+
+"---------Delete-----------"
+
+programacionRouter.delete(`/:id`, (req, res) => {
+    const id = req.params.id;
+
+    const index = programacion.findIndex(course => course.id == id);
+
+    if(index >= 0){
+        programacion.splice(index, 1);
+    }
+
+    res.send(JSON.stringify(programacion));
+});
+
+
+"--------Datos------------"
+
+//NOTA: no es necesario enviar la respuesta con un JSON.stringify porque el metodo .send() ya lo hace por defecto con los objetos que recibe y no tiene el formato json completo, por ejemplo, convierte {nombre: "victor"} a "{"nombre": "victor"}", basicamente le agrega lo que le falta y ademas lo convierte en string
+
+//res.json() equivale a res.send() pero siempre enviara la respuesta en un formato json. Por defecto a cualquier parametro se le aplica un JSON.stringify()
+//Mientras que res.send() puede enviar como respuesta no necesariamente objetos json, sino que tambien buffer, strings, objetos o arrays y va a configurar el tipo de contenido automaticamente
+
+//res.end() lo que hace es enviar una respuesta vacia y el navegador te tirara un error indicando su respectivo error. Esto se usa en los casos reales al crear nuestras paginas web, ejemplo: 
+
+//En vez de hacer lo siguiente: 
+
+if(result.length === 0){
+    return res.status(404).send(`${language} not found`);
+}
+
+//Haz lo siguiente:
+
+if(result.length === 0){
+    return res.status(404).end();
+}
+
+//El uso de estas dos anteriores depende de si tu quieres enviar una respuesta vacia o algun contenido o descripcion del porque ocurrio lo que ocurrio en el servidor
+
+//Usualmente el error 404 se utiliza para un camino que no es valido, que no existe o que no lleva ningun recurso en el servidor
+//Pero si en lugar de decirle que el camino no existe o no es valido, le queremos decir que no se encontro contenido, entonces utilizariamos el codigo de status 204
+//Codigo de status 204: la peticion se ha completado con exito pero su respuesta no tienen ningun contenido, aunque los encabezados pueden ser utiles 
+//Este error se pone mas que nada cuando ya hay 1 parametro (el primero despues del dominio) de la ulr que si existe dentro del servidor y los que le siguen son invalidos
+
