@@ -109,7 +109,9 @@ const heroes = ["Deadpool", "Superman", "Batman"];
 
 const [h1, h2, h3] = heroes;
 
-console.log(h1, h2, h3); //Cada posicion de la desestructuracion tendra el valor de su respectiva posicion del array original
+console.log(h1, h2, h3); //Cada posicion de la desestructuracion tendra el valor de su respectiva posicion del array original.
+
+const {v4 : uuidv4} = require(`uuid`); //De esta manera podemos nombrar una destructuracion
 
 
 
@@ -1025,3 +1027,34 @@ if(result.length === 0){
 //Codigo de status 204: la peticion se ha completado con exito pero su respuesta no tienen ningun contenido, aunque los encabezados pueden ser utiles 
 //Este error se pone mas que nada cuando ya hay 1 parametro (el primero despues del dominio) de la ulr que si existe dentro del servidor y los que le siguen son invalidos
 
+
+
+"MAPBOX GEOLOCATION"
+
+//Es una api que sirve para obtener informacion de una busqueda de ciudad o dependiendo de como configures el "Geocoding API Playground"
+//La info que solicites se obtendra con una solicitud HTTP
+
+"AXIOS"
+
+//Axios hace solicitudes HTTP
+
+//Siempre que usemos axios, hay que meter todo su proceso y lo relacionado a el, dentro de un try catch para manejarlo de mejor manera en caso de que la solicitud tire un error por x razon
+
+const res = await axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${place}.json?limit=8&proximity=ip&language=es&access_token=pk.eyJ1IjoidmljdG9yd2tleSIsImEiOiJjbDgyaHV6czUwODNuM3BxamZlOG1haHl0In0.w8WJxoGJn7KwqcOpUFT_0w`);
+
+console.log(res.data);
+
+//Para lo que lo de arriba sea mas legible y no se vea un desorden, tenemos que crear una instancia de axios, de la siguiente manera. Lo de abajo equivale a todo lo de arriba pero es mas legible y controlable
+
+const instance = axios.create({
+    baseURL: `https://api.mapbox.com/geocoding/v5/mapbox.places/${place}.json`,
+    params: {
+        "access_token": "pk.eyJ1IjoidmljdG9yd2tleSIsImEiOiJjbDgyaHp3dGEwcHp5M3ZvMzYxM3JqMjd1In0.MWJiyM4OMYjXucxnDXZkEg",
+        "limit": 8,
+        "language": "es" 
+    }
+});
+
+const res = await instance.get();  //Es lo mismo que poner axios.get("http://url.com") pero como ya creamos una instancia, se manda a llamar con el nombre de la instancia, el metodo (en este caso) y los parentesis vacios porque en si la instancia ya los tiene incluidos desde el momento que los creamos
+
+console.log(res.data);
