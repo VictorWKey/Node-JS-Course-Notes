@@ -1058,3 +1058,38 @@ const instance = axios.create({
 const res = await instance.get();  //Es lo mismo que poner axios.get("http://url.com") pero como ya creamos una instancia, se manda a llamar con el nombre de la instancia, el metodo (en este caso) y los parentesis vacios porque en si la instancia ya los tiene incluidos desde el momento que los creamos
 
 console.log(res.data);
+
+
+
+"VARIABLES DE ENTORNO CON DOTENV"
+
+import * as dotenv from 'dotenv';
+import { array } from 'yargs'
+dotenv.config();
+
+//process.env lo que hace es que ahi guarda muchas variables de entorno que despues pueden ser utilizadas
+//Lo que hace dotenv es agregar variables de entorno al proccess (las que queramos)
+//Para agregarlas necesitamos crear un archivo sin nombre de tipo env: ".env" y guardar la variable de entorno que vayamos a utilizar
+//¿Por que hariamos uso de una variable de entorno? porque podemos utilizar diferente claves, tokens, etc que vamos a repetir y usar varias veces en nuestro programa, o incluso podriamos llegar a tener la necesidad de cambiarlas, y tambien es muy molesto e incomodo y dificil de leer estas claves ya que tienen muchos numeros y digitos.
+//Ejemplo de lo que deberiamos poner en el archivo ".env": 
+
+MAPBOX_KEY=pk.eyJ1IjoidmljdG9yd2tleSIsImEiOiJjbDgyaHp3dGEwcHp5M3ZvMzYxM3JqMjd1In0.MWJiyM4OMYjXucxnDXZkEg
+
+//Para mandar a llamar el valor de esta variable, tendriamos que utilizar el proccess.env, ya que ahi se almacenan las variables de entorno
+
+process.env.MAPBOX_KEY
+
+//Es muy comun que si se trata de tokens propios o codigos que solo nosotros podemos usar o que son privados, no subamos el .env a github, sin que subamos un archivo env de la siguiente manera:
+//example.env
+//Y dentro de ese archivo poner por ejemplo lo siguiente:
+
+MAPBOX_KEY=aqui_va_el_token
+
+
+"DATOS"
+
+//al usar el metodo .map() en un array, en vez de utilizar un return para retornar un objeto, podemos utilizar parentesis, por ejemplo:
+
+arrayEjemplo.map(i => ({
+    id: i;
+}))
