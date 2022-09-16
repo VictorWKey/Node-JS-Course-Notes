@@ -637,6 +637,23 @@ server.listen(PUERTO, ()=>{
 //Con todo lo anterior ya tendriamos nuestro server creado en tan solo 9 lineas
 //Para echarlo a andar hay que hacer lo mismo de siempre, ejecutar el codigo en consola: node app.js
 
+//--------------------------------------------------
+const http = require(`http`);
+
+http.createServer((req, res)=>{
+    res.setHeader("Content-Disposition", "attachment; filename=lista.csv"); //Con esto le decimos el nombre del archivo, su tipo y que ahi se pondra la respuesta
+    res.writeHead(200, {"Content-Type": "application/csv"}); //Con este content-type, el navegador por lo menos sabe que tiene que descargar un archivo
+
+    res.write('id, name\n');
+    res.write('1, Roberto\n');
+    res.write('2, Eduardo\n');
+    res.write('3, Gallardo\n');
+
+    res.end();
+})
+.listen(8080);
+//---------------------------------------------------
+
 
 
 
@@ -735,7 +752,6 @@ const manejarSolicitudGET = (req, res)=>{
 
         return res.end(JSON.stringify(infoCursos)); //Para ver esto de una mejor manera en el servidor, podemos usar la extension JSON view de google chrome
     } else if (path === `/cursos/programacion`){
-
         return res.end(JSON.stringify(infoCursos.programacion));
     } 
 
@@ -753,7 +769,7 @@ const manejarSolicitudPOST = (req, res)=>{
         let cuerpo = ``;
 
         req.on(`data`, content=>{
-            cuerpo = content.toString(); //Si guardamos el cuerpo con un .toString() nos dara un error de buffer
+            cuerpo = content.toString(); //Si no guardamos el cuerpo con un .toString() nos dara un error de buffer
         }) //Este evento recibe la informacion del POST y la almacena en "content"
 
         req.on(`end`, ()=>{
@@ -831,6 +847,11 @@ app.get(`/api/courses/programation`, (req, res) => {
 
 app.get(`/api/courses/matematicas`, (req, res) => {
     res.send(JSON.stringify(infoCourses.matematicas))
+})
+
+//Lo siguiente hara que si hay un camino en el que se hizo una peticion get que no existe, mandara eso como respuesta
+app.get(`*`, (req, res)=>{
+    res.send(`404 | Page not found`);
 })
 
 const PORT = process.env.PORT || 3000; //el process.env.PORT lo que hara es obtener el puerto que se le asigna cuando hosteamos una pagina ya bien
@@ -1091,5 +1112,79 @@ MAPBOX_KEY=aqui_va_el_token
 //al usar el metodo .map() en un array, en vez de utilizar un return para retornar un objeto, podemos utilizar parentesis, por ejemplo:
 
 arrayEjemplo.map(i => ({
-    id: i;
+    id: i,
 }))
+
+
+
+"USO DEL OPERADOR SPREAD"
+
+//EJEMPLO
+
+const obj = {
+    nombre: "victor",
+    apellido: "Lopez",
+    edad: "18"
+}
+
+const crearNuevoObjeto = (propiedad1, propiedad2) =>{
+    return  {
+        ...obj,
+        propiedad1,
+        propiedad2
+    }
+
+}
+
+console.log(crearNuevoObjeto("valor1", "valor2")); // {nombre: "victor", apellido: "Lopez", edad: "18", propiedad1: "valor1", propiedad2: "valor2"}
+
+//Si queremos hacer uso del operador spread con un objeto, este debera ser utilizado dentro de otro objeto para poder "copiar y pegar" las propiedades un objeto dentro de otro objeto. Si analizas por que si ponemos ...obj en un console.log(), tiene mucha logica el porque da error y con un array no. No podemos hacer un console.log(nombre: "victor")
+
+
+
+
+"SERVIR CONTENIDO ESTATICO"
+
+const express = require("express");
+
+const app = express();
+
+const port = 8080;
+
+
+//Para que cualquier persona que sepa el url de nuestra pagina pueda ver (ejecutar) archivos publicos, tenemos que agregar esos archivos dentro de una carpeta que se llame "public"
+//Para hacer que esa carpeta y su contenido sea publico, se usa un middleware:
+app.use(express.static(__dirname + "/public")); //El metodo static indica que la pagina sera estatica y utilizara lo que esta dentro de public, y por lo tanto ocupara el lugar de "./" y al hacer la solicitud get ahi, se cargara el archivo "index.html" que esta dentro de la carpeta "public", en vez de cargar la respuesta que se envio en el res.send() de abajo
+//El path "/" es igual a lo que esta directamente dentro de la carpeta "public", pero solo cargara el archivo que se llame index.html
+//Ahora, si queremos cargar un archivo html pero en otro path, por ejemplo, que en vez de que se cargue la respuesta enviada en el app.get("./hola-mundo"), se cargue un archivo .html, tenemos que crear dentro de la carpeta "public", otra carpeta con el nombre de ese path, en este caso "hola-mundo" y poner dentro de ahi el archivo index.html que se va cargar en ese path
+//Lo que hara nuestra aplicacion (gracias al middleware) es checar si hay alguna carpeta dentro del public con el nombre de algun path, y utilizar los archivos que estan ahi, los cuales es como si los mandaras a llamar con un metodo get. Si no hay una carpeta con el nombre de un path, entonces si pasara a mandar como respuesta lo que le mandemos en el app.get(`/hola-mundo`)
+//Si no entiendes esto, regresa a ver la clase 89
+
+// app.get(`/`, (req, res) => {
+//     res.send(`respuesta de esta ruta`);
+// }) //Esto ya no se va ejecutar, por que ya se llamo al index.html dentro de esa ruta gracias al middleware
+
+app.get(`/hola-mundo`, (req, res) => {
+    res.send(`Hola mundo in his respective path`);
+})
+
+app.get(`*`, (req, res) => {
+    res.sendFile(__dirname + `/public/404.html`); //Este metodo enviara una respuesta que  ejecutara un determinado archivo dentro de ese path, en este caso, dentro de cualquier path no definido
+})
+
+//__dirname es el path donde esta ubicada nuestra ubicacion, es como si pusieramos `./public/404.html` (observa que hay un puntito), pero express pide que lo pongamos de la manera anterior: con __dirname
+//Recuerda que lo que va en el public, es publico para el usuario
+
+
+app.listen(port , ()=>{
+    console.log("Server is listening");
+})
+
+//-------------------------------------
+//*OBSERVACION MIA
+app.get(`/productos`, (req, res) => {
+    res.sendFile(__dirname + `/public/productos.html`); 
+});
+
+//Lo anterior es equivalente a que crearamos una carpeta llamada "productos" dentro de la carpeta "public" y dentro de ella pongamos un index.html con la misma info que pondriamos dentro del "productos.html"
+//Pero por buenas practicas, se usa el metodo de la carpeta, el otro metodo solo lo recomendaria solo para manejar los paths que no existen
