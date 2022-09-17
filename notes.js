@@ -1188,3 +1188,74 @@ app.get(`/productos`, (req, res) => {
 
 //Lo anterior es equivalente a que crearamos una carpeta llamada "productos" dentro de la carpeta "public" y dentro de ella pongamos un index.html con la misma info que pondriamos dentro del "productos.html"
 //Pero por buenas practicas, se usa el metodo de la carpeta, el otro metodo solo lo recomendaria solo para manejar los paths que no existen
+
+
+
+"HANDLEBARS"
+
+//Renderiza una webapp del lado del backend y al cliente le manda ya la aplicacion renderizada
+
+//Con handlebars podemos por ejemplo reutilizar bloques de codigo de un html para utilizarlo dentro de otro path, y no tener que copiar y pegar el mismo bloque varias veces, etc. (ejemplo: el navbar, footer, header, etc)
+
+//En caso de que vayamos a utilizar handlebars con express, tenemos que instalar "hbs", el cual se encuentra bajando un poco en su pagina de npm
+//npm i hbs
+
+//Cuando tenemos que renderizar un templete engine, tenemos que decirle a express que utilice handlebars con lo siguiente:
+
+app.set('view engine', 'hbs');
+
+//Para poder renderizar lo que querramos renderizar, tenemos que crear una carpeta estrictamente llamada "views", en la cual crearemos archivos .hbs, en los cuales estaran los templates que sean que querramos utilizar
+//Por ejemplo, crear un archivo "home.hbs" y dentro de el poner el codigo html del home
+//Despues para renderizarlo en el path "/", tenemos que usar lo siguiente:
+
+app.get(`/`, (req, res) => {
+    res.render('home'); //En vez de usar un res.sendFile(), usamos el res.render("nombredelarchivohbs") el cual es un metodo que se usa con handlebars, no es necesario especificar la carpeta views porque handlebars ya lo sabe
+}); //Aqui lo que sucedera es que renderizara el codigo html y por lo tanto cargara nuestra pagina como si estuviera cargando un archivo de extension .html
+//Al callback en este ejemplo se le llama "controlador"
+
+
+
+"---------Argumentos-desde-el-controlador---------"
+
+//Para enviar argumentos desde el controlador se hace lo siguiente:
+
+app.get(`/`, (req, res) => {
+    res.render('home', {
+        curso: "Curso de node",
+        nombre: "Victorito"
+    });
+})
+
+//Y despues podemos utilizar esas variables dentro de nuestro archivo home.hbs de la siguiente manera
+
+<title>{{ curso }}</title> // <title>Curso de node</title>
+
+//Te preguntaras, para que sirve esto? para renderizar informacion al cliente y que piense que siempre existio eso, que asi se renderizo la pagina, de hecho asi se renderizo la pagina exlcusivamente para el, con datos de el por asi decirlo
+//Con lo anterior logramos mandar informacion desde nuesto controlador, hasta la vista de la web
+//Renderizamos el archivo hbs
+
+
+"-------Parciales-con-hbs-----------"
+
+//Se utilizan para reutilizar codigo 
+//Creamos una carpeta dentro del views con el nombre que sea, por ejemplo "partials"
+
+const hbs = require('hbs'); 
+
+hbs.registerPartials(__dirname + '/views/partials');
+
+//Con estas dos lineas anteriores ya podemos usar parciales
+//Para eso crearemos archivos hbs dentro de la carpeta partials, cada uno con su respectivo contenido, por ejemplo, el header.hbs contendra dentro las etiquetas html necesarias para el home
+
+<header id="header">
+	<div class="logo"><a href="index.html">Road Trip <span>by TEMPLATED</span></a></div>
+	<a href="#menu"><span>Menu</span></a>
+</header>
+
+//Dentro del home.hbs (este archivo no esta en partials, esta directamente en views), donde necesitemos el header, lo pondremos de la siguiente manera:
+
+{{> header}}
+
+//Y listo, tendremos nuestro header en el home
+
+//Si te das cuenta, aunque los argumentos del controlador no este puestos directamente en su path, aun asi se le mandara los argumentos desde el parcial
