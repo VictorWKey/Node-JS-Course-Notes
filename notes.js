@@ -1085,7 +1085,6 @@ console.log(res.data);
 "VARIABLES DE ENTORNO CON DOTENV"
 
 import * as dotenv from 'dotenv';
-import { array } from 'yargs'
 dotenv.config();
 
 //process.env lo que hace es que ahi guarda muchas variables de entorno que despues pueden ser utilizadas
@@ -1259,3 +1258,84 @@ hbs.registerPartials(__dirname + '/views/partials');
 //Y listo, tendremos nuestro header en el home
 
 //Si te das cuenta, aunque los argumentos del controlador no este puestos directamente en su path, aun asi se le mandara los argumentos desde el parcial
+
+
+
+"PREPARAR WEBSERVER PARA SUBIRLO A UN HOSTING"
+
+//Si te das cuenta, si cerramos nodemon o la ejecucion node, nuestra aplicacion se cae porque el servidor se apaga
+//El hosting sirve para subirlo a la red y este siempre activo
+
+//Tenemos que crear un .env, para las variables de entorno y primero instalar su respectivo paquete
+
+PORT=8081
+
+//Le pondremos por defecto "PORT" , ya que los hostings por defecto sacan el port del enviroment
+
+//Tenemos que agregar lo siguiente a nuestro package.json en la propiedad "scripts"
+
+"start": "node app.js"
+
+//Tambien es recomendable agregar un .gitignore y ignorar node_modules/
+
+
+
+"DESPLEGAR WEBSERVER EN HEROKU"
+
+//Desplegar aplicacion en la nube con Heroku, un servicio serverless
+
+//Hay varias que funcionan como esa, por ejemplo: firebase hosting, amazon web servicers, google cloud, microsoft azure, digitial occean y Heroku
+
+//Heroku da hasta 5 aplicaciones gratuitos 
+
+//En el tier gratuito, si alguna de nuestras 5 aplicaciones, si pasan 30 minutos sin actividad, se suspenden, pero tan pronto recibe una peticion, estara activa por otros 30 minutos
+
+//Le damos a new, le damos el nombre
+
+//Instalamos heroku CLI si no lo tenemos
+//Para comprobar eso ponemos heroku --version en nuestra terminal
+
+//heroku login, etc
+
+
+
+"DESPLEGAR APLICACIONES DE ANGULAR Y REACT"
+
+//Para hacer eso solo tenemos que eliminar el codigo que tiene que ver con los handlebars
+
+//Handlebars
+hbs.registerPartials(__dirname + '/views/partials', function (err) {});
+app.set('view engine', 'hbs');
+
+app.get(`/`, (req, res) => {
+    res.render('home', {
+        curso: "Curso de node",
+        nombre: "Victorito"
+
+    });
+})
+app.get(`/elements`, (req, res) => {
+    res.render('elements', {
+        curso: "Curso de node",
+        nombre: "Victorito"
+
+    });
+})
+app.get(`/generic`, (req, res) => {
+    res.render('generic', {
+        curso: "Curso de node",
+        nombre: "Victorito"
+
+    });
+})
+
+//Poner lo siguiente de la siguiente manera, y listo
+app.get(`*`, (req, res) => {
+    res.sendFile(__dirname + `/public/index.html`); //Este metodo enviara una respuesta que  ejecutara un determinado archivo dentro de ese path, en este caso, dentro de cualquier path no definido
+})
+
+
+//Ya que react hace el trabajo de handlebars tambien, pero eso lo veremos con react
+
+//Y copiar y pegar todo en la carpeta public, y listo, es lo mismo con react y angular
+
