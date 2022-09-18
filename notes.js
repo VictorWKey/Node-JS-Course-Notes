@@ -1339,3 +1339,54 @@ app.get(`*`, (req, res) => {
 
 //Y copiar y pegar todo en la carpeta public, y listo, es lo mismo con react y angular
 
+
+"RESTSERVER"
+
+"--------Cors-package--------"
+
+//Cross-Origin Resource Sharing
+
+//For security reasons, browsers restrict cross-origin HTTP requests initiated from scripts. For example, XMLHttpRequest and the Fetch API follow the same-origin policy. This means that a web application using those APIs can only request resources from the same origin the application was loaded from unless the response from other origins includes the right CORS headers.
+
+//Si se intenta hacer una peticion fetch, de un dominio a otro, por defecto no nos dejara, debido a la politica del same origin
+//Lo que hace Cors es habilitarnos al posibilidad de si poder hacer solicitudes de un web server a otro, podemos hacer que todos puedan hacer solicitudes a nuestro webserver o podemos hacer una whitelist para que solo ciertos webservers puedan hacerlo
+
+//Cors es un middleware, el cual se puede utilizar instalando su paquete en npm
+
+//Hay mas cosas del REST Server que tu ya conocias
+
+
+
+
+
+"DATOS DE GITHUB"
+
+//Podemos crear tags en nuestro github
+
+//¿Para que sirven?
+//Por lo general solemos tener distintas versiones de un proyecto, de lo mas basico a lo mas avanzado o que simplemente son diferentes
+//Lo mas comodo seria poder descargar el codigo que tenia exclusivamente una version que fue creado hace un tiempo
+//Lo ideal seria descargar solo lo que pertenecia a la version en aquel tiempo
+//Para poder hacer eso, haremos lo siguiente justo cuando consideremos que acabamos alguna version de nuestro proyecto
+
+//git tag -a v1.0.0 -m"Basic RESTServer"
+//git push --tags
+
+//Nos vamos a GitHub, le damos a editar tag (creo que tiene otro nombre la opcion) y lo llenamos y le damos en publicar tag
+
+
+
+
+"PROTIP POSTMAN - VARIABLES DE ENTORNO EN POSTMAN"
+
+//Podemos cambiar de un enviroment a otro y utilizar variables para cambiar entre desarrollo y produccion
+
+//Agregamos un enviroment y creamos una variable "url", le damos el valor, dependiendo de si es el ambien de produccion o de desarrllo
+
+//Clase 111 del curso
+
+//Nos sirve para cambiar entre ambiente de desarrollo y produccion mas rapido en postman
+
+
+
+
