@@ -1085,6 +1085,7 @@ console.log(res.data);
 "VARIABLES DE ENTORNO CON DOTENV"
 
 import * as dotenv from 'dotenv';
+import { route } from '../08-restserver/routes/users.js'
 dotenv.config();
 
 //process.env lo que hace es que ahi guarda muchas variables de entorno que despues pueden ser utilizadas
@@ -1388,5 +1389,60 @@ app.get(`*`, (req, res) => {
 //Nos sirve para cambiar entre ambiente de desarrollo y produccion mas rapido en postman
 
 
+
+
+
+"MONGOOSE"
+
+//Es un  ORM (Object Relational Maping)
+
+//Es un ORM dedicado a Node
+
+//Es una biblioteca que añades a tu codigo de la aplicacion y este hace de intermediario entre la base de datos y tu aplicacion , es decir, una vez utilices un ORM , lo que te va permitir es que ya no tienes que escribir consultas de SQL o noSQL, simplemente escribes funciones y esas funciones hacen por ti las consultas, basicamente es como interactuar con la base de datos a traves de codigo, en lugar de utilizar los tipicos lenguajes de las bases de datos.
+
+//A veces necesitamos manejar nuestra base de datos utilizando objetos, para eso tambien nos sirve moongose
+
+
+
+"BYCRIPTJS"
+
+//Sirve para encriptar contraseñas
+//Es un npm package
+
+
+
+"EXPRESS-VALIDATOR"
+
+//Es una gran coleccion de middlewares
+//Es un package para validar, por ejemplo, validar que un string tenga la estructura de un email
+
+//Clase 122 si hay dudas
+
+
+"MIDDLEWARES"
+
+//Un middleware se ejecuta antes de que cualquier controlador se ejecuta. Tiene tambien acceso al req y al res
+//Podemos poner middlewares que son globales (se ejecutan en todas las rutas) o locales (se ejecutan en rutas especificas)
+//Estructura de un middleware (es un callback):
+
+(req, res, next) => {
+    //Hacer lo que queramos con el req
+    //Hacer lo que queramos con el res
+
+    next(); // Esta funcion ejecuta el siguiente middleware, sino se queda trabada la aplicacion
+}
+
+//Ejecutar middleware de forma global: 
+
+app.use((req, res, next) => {
+    next(); 
+});
+
+
+//Ejecutar middleware de forma local:
+
+route.get('/', (req, res, next) => {next()}, controller);
+
+route.get('/', [(req, res, next) => {next()}, route.get('/', (req, res, next) => {next()}, controller)], controller); //En el caso de locales si podemos poner varios, pero se ponen dentro de un array. Si en lugar de poner varios en local, queremos poner varios en global, tenemos que hacer uso del app.use() tantas veces como sea necesario ya que solo puede ejecutar un middleware dentro de ella 
 
 
