@@ -1404,7 +1404,7 @@ app.get(`*`, (req, res) => {
 
 
 
-"BYCRIPTJS"
+"BCRIPTJS"
 
 //Sirve para encriptar contraseñas
 //Es un npm package
@@ -1417,6 +1417,7 @@ app.get(`*`, (req, res) => {
 //Es un package para validar, por ejemplo, validar que un string tenga la estructura de un email
 
 //Clase 122 si hay dudas
+
 
 
 "MIDDLEWARES"
@@ -1446,3 +1447,26 @@ route.get('/', (req, res, next) => {next()}, controller);
 route.get('/', [(req, res, next) => {next()}, route.get('/', (req, res, next) => {next()}, controller)], controller); //En el caso de locales si podemos poner varios, pero se ponen dentro de un array. Si en lugar de poner varios en local, queremos poner varios en global, tenemos que hacer uso del app.use() tantas veces como sea necesario ya que solo puede ejecutar un middleware dentro de ella 
 
 
+
+"VARIABLES DE ENTORNO EN HEROKU"
+
+// Nunca deberiamos de compartir nuestra cadena de conexion (MONGODB_CNN) a otras personas, es decir, no la debemos hacer publica ya que otra persona podria hacerse pasar por nosotros. Al menos de que la cadena de conexion haya sido compartida para un crupo de desarrolladores.
+// Seguramente un administrador nos dara nuestro propio usuario y clave para que todo lo que yo haga se registre en mi usuario. Por eso, la hacemos publica, se podrian hacer pasar por nosotros.
+
+// Remover el seguimiento del archivo .env en git de la siguiente manera: git rm .env --cached
+//Establecer variables de entorno en Heroku:
+//heroku config:set variable="valor"
+
+//Tampoco debemos compartir la firma de nuestros JWT
+
+heroku config:set SECRETORPRIVATEKEY="3st43sm1pr1v4t3k3y"
+
+
+
+"CONSOLE.LOGS EN PRODUCCION CON HEROKU"
+
+//Para ver los console.log() de nuestra aplicacion pero cuando esta en produccion, podemos utilizar los siguientes comandos:
+
+// heroku logs -n 100 //Ver los ultimos 100 logs
+
+// heroku logs -n 100 --tail //ver los ultimos 100 logs pero al mismo tiempo verlos en tiempo real
