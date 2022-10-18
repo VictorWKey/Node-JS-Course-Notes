@@ -1470,3 +1470,58 @@ heroku config:set SECRETORPRIVATEKEY="3st43sm1pr1v4t3k3y"
 // heroku logs -n 100 //Ver los ultimos 100 logs
 
 // heroku logs -n 100 --tail //ver los ultimos 100 logs pero al mismo tiempo verlos en tiempo real
+
+
+"SIGN IN GOOGLE"
+
+// Crear proyecto
+
+// Crear pantalla de consentimiento
+
+// Crear credencial 
+
+// Agregar google client id y el google secret id al .env
+
+// Agregar el boton al html 
+
+// Manejar la respuesta de la credencial
+
+
+
+"APORTE CON BUSCAR PRODUCTOS CON BASE A LA CATEGORIA"
+
+
+const searchProductsByCategory = async( word = '', res = response) => {
+ 
+    const isMongoID = ObjectId.isValid( word )
+ 
+    if ( isMongoID ) {
+        const product = await Product.find( { category: ObjectId( word ) } ) // Ojo que aqui cuando buscamos por el id de algo que no sea el propio id de la coleccion, se utiliza el ObjectId()
+                                        .populate('category', 'name')
+ 
+        return res.json( {
+            results: ( product ) ? [ product ] : []
+        })
+    }
+ 
+    const regex = new RegExp( word, 'i' )
+ 
+    const categories = await Category.find({ name: regex, status: true});
+
+    if( !categories.length ) {
+        return res.status(400).json({
+            msg: `There is not result with ${ word } `
+        })
+    }
+    
+    const products = await Product.find({
+        $or: [...categories.map( category => ({
+            category: category._id
+        }))],
+        $and: [{ status: true }]
+    }).populate('category', 'name')
+ 
+ 
+    res.json({
+        results: products
+    })
