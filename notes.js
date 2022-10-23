@@ -1525,3 +1525,12 @@ const searchProductsByCategory = async( word = '', res = response) => {
     res.json({
         results: products
     })
+}
+
+
+"WEBSOCKETS"
+
+// Los sockets tienen eventos de escucha y de emitir, por defecto tienen eventos como connect y disconnect, tanto el socket por el lado del servidor, como tambien por el lado del cliente 
+// Estos eventos se mandan a llamar de una manera un poco diferente
+// Cuando un socket del lado del cliente le emite algo al socket del servidor, el servidor es capaz de emitirle cosas a todos los clientes del lado del cliente
+// Para que esta comunicacion bidireccional funcione, el socket del cliente debe estar conectado con el socket del servidor
